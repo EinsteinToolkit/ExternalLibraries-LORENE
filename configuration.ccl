@@ -1,0 +1,9 @@
+# Configuration definitions for thorn LORENE
+
+PROVIDES LORENE
+{
+  SCRIPT LORENE.sh
+  LANG bash
+}
+
+REQUIRES LAPACK BLAS GSL

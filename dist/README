@@ -1,0 +1,10 @@
+This tarball LORENE.tar.gz is created in the following way:
+
+1. Check out LORENE from CVS into a directory LORENE.
+
+2. Do not begin to build LORENE in this directory, as this would
+   modify the source tree.  (It would add additional files.)
+
+3. Create the tarball from this source tree.
+
+4. Test whether the patches apply cleanly.
