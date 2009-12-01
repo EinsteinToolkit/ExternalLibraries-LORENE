@@ -29,7 +29,9 @@ unset MAKEFLAGS
     set -x                      # Output commands
     set -e                      # Abort on errors
     cd ${INSTALL_DIR}
-    if [ -e done-${NAME} -a done-${NAME} -nt ${SRCDIR}/dist/${NAME}.tar.gz ]; then
+    if [ -e done-${NAME} -a done-${NAME} -nt ${SRCDIR}/dist/${NAME}.tar.gz \
+                         -a done-${NAME} -nt ${SRCDIR}/LORENE.sh ]
+    then
         echo "LORENE: The enclosed LORENE library has already been built; doing nothing"
     else
         echo "LORENE: Building enclosed LORENE library"
