@@ -1,0 +1,12 @@
+diff -ru Lorene.orig/C++/Makefile Lorene/C++/Makefile
+--- Lorene.orig/C++/Makefile	2009-09-02 12:44:52.000000000 -0500
++++ Lorene/C++/Makefile	2009-11-30 19:50:04.000000000 -0600
+@@ -39,7 +39,7 @@
+ 	cd Source/Mtbl_cf; $(MAKE)
+ 	cd Source/Non_class_members/Coef; $(MAKE)
+ 	cd Source/Non_class_members/Coef/$(FFT_DIR); $(MAKE)
+-	cd Source/Non_class_members/Graphics; $(MAKE)
++#	cd Source/Non_class_members/Graphics; $(MAKE)
+ 	cd Source/Non_class_members/Operators; $(MAKE)
+ 	cd Source/Non_class_members/PDE; $(MAKE)
+ 	cd Source/Non_class_members/Utilities; $(MAKE)

@@ -1,0 +1,40 @@
+Index: Lorene/C++/Source/App_hor/spheroid.C
+===================================================================
+RCS file: /cvsroot/Lorene/C++/Source/App_hor/spheroid.C,v
+retrieving revision 1.15
+diff -u -r1.15 spheroid.C
+--- Lorene/C++/Source/App_hor/spheroid.C	10 Dec 2008 13:55:55 -0000	1.15
++++ Lorene/C++/Source/App_hor/spheroid.C	30 Nov 2009 04:24:02 -0000
+@@ -704,6 +704,32 @@
+   set_der_0x0() ; 
+   
+ }
++
++// Assignment to another Spheroid
++void Spheroid::operator=(const Spheroid& sph_in)
++{
++
++  h_surf = sph_in.h_surf ;
++  jac2d = sph_in.jac2d ;
++  proj = sph_in.proj ;
++  qq = sph_in.qq ;
++  ss  = sph_in.ss ;
++  ephi = sph_in.ephi ;
++  qab = sph_in.qab ;
++  ricci = sph_in.ricci ;
++  hh = sph_in.hh ;
++  trk = sph_in.trk ;
++  ll = sph_in.ll ;
++  jj = sph_in.jj ;
++  fff = sph_in.fff ;
++  ggg = sph_in.ggg ;
++  zeta = sph_in.zeta ;
++  issphere = sph_in.issphere ;
++
++  del_deriv() ;  // Deletes all derived quantities
++
++}
++
+ //------------//
+ //Destructor //
+ //-----------//

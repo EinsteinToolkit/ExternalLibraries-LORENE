@@ -1,0 +1,12 @@
+diff -ru Lorene.orig/F77/Source/Poisson2d/fcer3s.f Lorene/F77/Source/Poisson2d/fcer3s.f
+--- Lorene.orig/F77/Source/Poisson2d/fcer3s.f	2001-11-20 09:19:30.000000000 -0600
++++ Lorene/F77/Source/Poisson2d/fcer3s.f	2009-11-25 21:48:21.000000000 -0600
+@@ -206,7 +206,7 @@
+ C
+ C		INITIALISATION.
+ C
+-	IF (NCY.EQ.NY1.AND.NCZ.EQ.NZ1.AND.NCR.EQ.NR1.AND.NEQ.EQ.NNN64) GO TO 800
++	IF (NCY.EQ.NY1.AND.NCZ.EQ.NZ1.AND.NCR.EQ.NR1.AND.NEQ.EQ.NNN64) GOTO 800
+ C
+ 	NCR=NR1
+ 	NCY=NY1

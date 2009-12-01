@@ -1,10 +1,21 @@
 This tarball LORENE.tar.gz is created in the following way:
 
-1. Check out LORENE from CVS into a directory LORENE.
+1. Check out LORENE from CVS:
+
+   cvs -d :pserver:anonymous@octane.obspm.fr:/cvsroot checkout Lorene
 
 2. Do not begin to build LORENE in this directory, as this would
    modify the source tree.  (It would add additional files.)
 
-3. Create the tarball from this source tree.
+3. Create the tarball from this source tree:
 
-4. Test whether the patches apply cleanly.
+   tar czf Lorene.tar.gz Lorene
+
+4. Test whether the patches apply cleanly.  Do not add the patches to
+   the tarball:
+
+   patch -p0 < [XXX].patch
+
+5. Remove the cvs source tree again:
+
+   rm -rf Lorene

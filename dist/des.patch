@@ -1,0 +1,121 @@
+Index: Lorene/C++/Source/Bin_hor/binhor_hh.C
+===================================================================
+RCS file: /cvsroot/Lorene/C++/Source/Bin_hor/binhor_hh.C,v
+retrieving revision 1.3
+diff -u -r1.3 binhor_hh.C
+--- Lorene/C++/Source/Bin_hor/binhor_hh.C	9 Jan 2008 14:28:58 -0000	1.3
++++ Lorene/C++/Source/Bin_hor/binhor_hh.C	30 Nov 2009 03:47:22 -0000
+@@ -892,7 +892,7 @@
+       //      des_profile(hh1(i,j), 0., 20., M_PI/2, M_PI) ;
+       //des_profile(hh1(i,j), 0., 20., M_PI/2, 0) ;
+       //des_profile(hh1(i,j), 0., 20., 0, M_PI) ;
+-      des_coupe_z (hh1(i,j), 0., 5) ;
++      //des_coupe_z (hh1(i,j), 0., 5) ;
+     }
+ 
+   hh1.change_triad(hole1.mp.get_bvect_spher()) ;
+@@ -908,7 +908,7 @@
+   hole2.tgam = tgam_2 ;
+ 
+   
+-  des_meridian(hh1, 0., 20., "hh1", 0) ;
++  //des_meridian(hh1, 0., 20., "hh1", 0) ;
+ 
+ 
+ }
+Index: Lorene/C++/Source/Isol_hor/init_data.C
+===================================================================
+RCS file: /cvsroot/Lorene/C++/Source/Isol_hor/init_data.C,v
+retrieving revision 1.28
+diff -u -r1.28 init_data.C
+--- Lorene/C++/Source/Isol_hor/init_data.C	19 Aug 2008 06:42:00 -0000	1.28
++++ Lorene/C++/Source/Isol_hor/init_data.C	30 Nov 2009 03:47:22 -0000
+@@ -1262,10 +1262,10 @@
+     for (int mer=0; mer<niter; mer++) {
+ 
+       
+-      des_meridian(psi_j, 1, 10., "psi", 0) ;
+-      des_meridian(nn_j, 1, 10., "nn", 1) ;
+-      des_meridian(theta_j, 1, 10., "Theta", 2) ;
+-      des_meridian(chi_j, 1, 10., "chi", 3) ;
++      //des_meridian(psi_j, 1, 10., "psi", 0) ;
++      //des_meridian(nn_j, 1, 10., "nn", 1) ;
++      //des_meridian(theta_j, 1, 10., "Theta", 2) ;
++      //des_meridian(chi_j, 1, 10., "chi", 3) ;
+       arrete() ;
+ 
+ 
+@@ -1409,8 +1409,8 @@
+ 	 // Iteration in theta/chi
+ 	 for (int i=0 ; i<niter ; i++) {
+ 
+-	   des_meridian(theta_i, 1, 10., "Theta", 2) ;
+-	   des_meridian(chi_i, 1, 10., "chi", 3) ;
++	   //des_meridian(theta_i, 1, 10., "Theta", 2) ;
++	   //des_meridian(chi_i, 1, 10., "chi", 3) ;
+ 	   arrete() ;
+ 
+ 
+Index: Lorene/C++/Source/Time_slice/tslice_conf_init.C
+===================================================================
+RCS file: /cvsroot/Lorene/C++/Source/Time_slice/tslice_conf_init.C,v
+retrieving revision 1.10
+diff -u -r1.10 tslice_conf_init.C
+--- Lorene/C++/Source/Time_slice/tslice_conf_init.C	4 Dec 2008 18:22:49 -0000	1.10
++++ Lorene/C++/Source/Time_slice/tslice_conf_init.C	30 Nov 2009 03:47:23 -0000
+@@ -223,7 +223,7 @@
+         maxabs(psi_jp1.laplacian() - source_psi,
+                 "Absolute error in the resolution of the equation for Psi") ;  
+ 
+-        des_meridian(psi_jp1, 0., ray_des, "Psi", ngraph0, graph_device) ; 
++        //des_meridian(psi_jp1, 0., ray_des, "Psi", ngraph0, graph_device) ; 
+ 
+         // Resolution of the Poisson equation for the lapse
+         // ------------------------------------------------
+@@ -236,7 +236,7 @@
+         maxabs(nn_jp1.laplacian() - source_nn,
+                 "Absolute error in the resolution of the equation for N") ;  
+ 
+-        des_meridian(nn_jp1, 0., ray_des, "N", ngraph0+1, graph_device) ; 
++        //des_meridian(nn_jp1, 0., ray_des, "N", ngraph0+1, graph_device) ; 
+         
+         // Resolution of the vector Poisson equation for the shift
+         //---------------------------------------------------------
+@@ -244,12 +244,14 @@
+         Vector beta_jp1 = source_beta.poisson(0.3333333333333333, ff, 
+                                               method_poisson_vect) ; 
+         
++        /*
+         des_meridian(beta_jp1(1), 0., ray_des, "\\gb\\ur\\d", ngraph0+2, 
+                      graph_device) ; 
+         des_meridian(beta_jp1(2), 0., ray_des, "\\gb\\u\\gh\\d", ngraph0+3, 
+                      graph_device) ; 
+         des_meridian(beta_jp1(3), 0., ray_des, "\\gb\\u\\gf\\d", ngraph0+4, 
+                      graph_device) ; 
++        */
+         
+         // Test:
+         Vector test_beta = (beta_jp1.derive_con(ff)).divergence(ff)
+Index: Lorene/C++/Source/Time_slice/tslice_dirac_max_evolve.C
+===================================================================
+RCS file: /cvsroot/Lorene/C++/Source/Time_slice/tslice_dirac_max_evolve.C,v
+retrieving revision 1.16
+diff -u -r1.16 tslice_dirac_max_evolve.C
+--- Lorene/C++/Source/Time_slice/tslice_dirac_max_evolve.C	4 Dec 2008 18:22:49 -0000	1.16
++++ Lorene/C++/Source/Time_slice/tslice_dirac_max_evolve.C	30 Nov 2009 03:47:23 -0000
+@@ -673,6 +673,7 @@
+ 	    beta_evol.update(beta_new, jtime, ttime) ;             
+ 	}    
+                 
++        /*
+         des_meridian(beta()(1), 0., ray_des, "\\gb\\ur\\d", ngraph0+6,
+                      graph_device) ; 
+         des_meridian(beta()(2), 0., ray_des, "\\gb\\u\\gh\\d", ngraph0+7,
+@@ -695,6 +696,7 @@
+                      graph_device) ; 
+                 
+         arrete(nopause) ; 
++        */
+ 
+     }
+ 

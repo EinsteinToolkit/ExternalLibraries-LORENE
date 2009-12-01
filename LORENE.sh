@@ -9,7 +9,7 @@ set -x                          # Output commands
 set -e                          # Abort on errors
 
 # Set locations
-NAME=LORENE
+NAME=Lorene
 SRCDIR=$(dirname $0)
 INSTALL_DIR=${SCRATCH_BUILD}
 LORENE_DIR=${INSTALL_DIR}/build-${NAME}/${NAME}
@@ -34,28 +34,42 @@ unset MAKEFLAGS
     else
         echo "LORENE: Building enclosed LORENE library"
         
+        # Should we use gmake or make?
+        MAKE=$(gmake --help > /dev/null 2>&1 && echo gmake || echo make)
+        # Should we use gpatch or patch?
+        PATCH=$(gpatch -v > /dev/null 2>&1 && echo gpatch || echo patch)
+        # Should we use gtar or tar?
+        TAR=$(gtar --help > /dev/null 2>&1 && echo gtar || echo tar)
+        
         echo "LORENE: Unpacking archive..."
         rm -rf build-${NAME}
         mkdir build-${NAME}
         pushd build-${NAME}
-        # Should we use gtar or tar?
-        TAR=$(gtar --help > /dev/null 2> /dev/null && echo gtar || echo tar)
         ${TAR} xzf ${SRCDIR}/dist/${NAME}.tar.gz
-        patch -p0 < ${SRCDIR}/dist/darwin.patch
+        ${PATCH} -p0 < ${SRCDIR}/dist/des.patch
+        ${PATCH} -p0 < ${SRCDIR}/dist/fortran.patch
+        ${PATCH} -p0 < ${SRCDIR}/dist/pgplot.patch
+        ${PATCH} -p0 < ${SRCDIR}/dist/spheroid.patch
+        # Prevent overly long lines from CVS $Header$ comments
+        find ${NAME} -name '*.f' |
+        xargs perl -pi -e 's/\$Header.*\$/\$Header\$/g'
         popd
         
         echo "LORENE: Configuring..."
         pushd build-${NAME}/${NAME}
         cat > local_settings <<EOF
 CXX = ${CXX}
-CXXFLAGS ${CXXFLAGS}
+CXXFLAGS = ${CXXFLAGS}
 CXXFLAGS_G = ${CXXFLAGS}
 F77 = ${F77}
-F77FLAGS = ${F77FLAGS}
-F77FLAGS_G = ${F77FLAGS}
-INC = -I\$(HOME_LORENE)/C++/Include -I\$(HOME_LORENE)/C++/Include_extra 
+F77FLAGS = ${F77FLAGS} $($(echo ${F77} | grep -i xlf > /dev/null 2>&1) && echo '' -qfixed)
+F77FLAGS_G = ${F77FLAGS} $($(echo ${F77} | grep -i xlf > /dev/null 2>&1) && echo '' -qfixed)
+INC = -I\$(HOME_LORENE)/C++/Include -I\$(HOME_LORENE)/C++/Include_extra $(echo ${GSL_INC_DIRS} | xargs -n 1 -I @ echo -I@)
+$($(echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1) && echo "export OBJECT_MODE=64")
 RANLIB = ${RANLIB}
-MAKEDEPEND = ${CPP} \$(INC) -M >> \$(df).d \$<
+# We don't need dependencies since we always build from scratch
+#MAKEDEPEND = ${CXX_DEPEND} \$(INC) \$< ${CXX_DEPEND_OUT} && mv \$@ \$(df).d
+MAKEDEPEND = : > \$(df).d
 DEPDIR = .deps
 FFT_DIR = FFT991
 LIB_CXX = ${LIBS}
@@ -70,7 +84,7 @@ EOF
         # "regular" version and a "debug" version.  Both are identical
         # (since we specified identical build options above), and we
         # ignore the "debug" version.
-        make cpp fortran export
+        ${MAKE} cpp fortran export
         popd
         
         echo 'done' > done-${NAME}
@@ -78,7 +92,10 @@ EOF
     fi
 )
 
-# TODO: check $?
+if (( $? )); then
+    echo 'Error while building LORENE.  Aborting.'
+    exit 1
+fi
 
 
 
