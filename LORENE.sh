@@ -52,9 +52,16 @@ unset MAKEFLAGS
         ${PATCH} -p0 < ${SRCDIR}/dist/fortran.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/pgplot.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/spheroid.patch
-        # Prevent overly long lines from CVS $Header$ comments
+        # Prevent overly long lines from CVS Header comments
         find ${NAME} -name '*.f' |
         xargs perl -pi -e 's/\$Header.*\$/\$Header\$/g'
+        # Do not build the debug version of the Lorene libraries
+        find ${NAME} -name Makefile |
+        xargs perl -pi -e 's+	\$\(MAKE\) -f Makefile_lib_g+#	\$(MAKE) -f Makefile_lib_g+'
+        find ${NAME} -name Makefile |
+        xargs perl -pi -e 's+	mv \*.o Objects_g+#	mv *.o Objects_g+'
+        find ${NAME} -name Makefile |
+        xargs perl -pi -e 's+install: \$\(LIB\)/liblorenef77_g.a \$\(LIB\)/liblorenef77.a+install: \$(LIB)/liblorenef77.a+'
         popd
         
         echo "LORENE: Configuring..."
@@ -95,7 +102,9 @@ EOF
 )
 
 if (( $? )); then
+    echo 'BEGIN ERROR'
     echo 'Error while building LORENE.  Aborting.'
+    echo 'END ERROR'
     exit 1
 fi
 
