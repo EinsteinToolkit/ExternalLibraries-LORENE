@@ -61,7 +61,7 @@ unset MAKEFLAGS
         find ${NAME} -name Makefile |
         xargs perl -pi -e 's+	mv \*.o Objects_g+#	mv *.o Objects_g+'
         find ${NAME} -name Makefile |
-        xargs perl -pi -e 's+install: \$\(LIB\)/liblorenef77_g.a \$\(LIB\)/liblorenef77.a+install: \$(LIB)/liblorenef77.a+'
+        xargs perl -pi -e 's+install: \$\(LIB\) \$\(LIB\)/liblorenef77_g.a \$\(LIB\)/liblorenef77.a+install: \$(LIB) \$(LIB)/liblorenef77.a+'
         popd
         
         echo "LORENE: Configuring..."
