@@ -49,19 +49,25 @@ unset MAKEFLAGS
         pushd build-${NAME}
         ${TAR} xzf ${SRCDIR}/dist/${NAME}.tar.gz
         ${PATCH} -p0 < ${SRCDIR}/dist/des.patch
-        ${PATCH} -p0 < ${SRCDIR}/dist/fortran.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/pgplot.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/spheroid.patch
-        # Prevent overly long lines from CVS Header comments
-        find ${NAME} -name '*.f' |
-        xargs perl -pi -e 's/\$Header.*\$/\$Header\$/g'
+        # Prevent overly long lines
+        for file in $(find ${NAME} -name '*.f'); do
+            # Remove CVS Header comments
+            perl -pi -e 's{\$Header.*\$}{\$Header\$}g' $file
+            # Replace tabs with eight blanks
+            perl -pi -e 's{\t}{        }' $file
+            # Remove in-line comments (in lines without quotes)
+            perl -pi -e 's{^([^'\''"]*?)!.*$}{$1}' $file
+            # Break long lines
+            perl -pi -e 's{^([ 0-9].{71})(.+)}{$1\n     \$$2}' $file
+        done
         # Do not build the debug version of the Lorene libraries
-        find ${NAME} -name Makefile |
-        xargs perl -pi -e 's+	\$\(MAKE\) -f Makefile_lib_g+#	\$(MAKE) -f Makefile_lib_g+'
-        find ${NAME} -name Makefile |
-        xargs perl -pi -e 's+	mv \*.o Objects_g+#	mv *.o Objects_g+'
-        find ${NAME} -name Makefile |
-        xargs perl -pi -e 's+install: \$\(LIB\) \$\(LIB\)/liblorenef77_g.a \$\(LIB\)/liblorenef77.a+install: \$(LIB) \$(LIB)/liblorenef77.a+'
+        for file in $(find ${NAME} -name Makefile); do
+            perl -pi -e 's{\t\$\(MAKE\) -f Makefile_lib_g}{#\t\$(MAKE) -f Makefile_lib_g}' $file
+            perl -pi -e 's{\tmv \*.o Objects_g}{#\tmv *.o Objects_g}' $file
+            perl -pi -e 's{install: \$\(LIB\) \$\(LIB\)/liblorenef77_g.a \$\(LIB\)/liblorenef77.a}{install: \$(LIB) \$(LIB)/liblorenef77.a}' $file
+        done
         popd
         
         echo "LORENE: Configuring..."
