@@ -16,7 +16,6 @@ LORENE_DIR=${INSTALL_DIR}/build-${NAME}/${NAME}
 
 # Clean up environment
 unset LIBS
-unset MAKEFLAGS
 
 
 
@@ -49,8 +48,8 @@ unset MAKEFLAGS
         pushd build-${NAME}
         ${TAR} xzf ${SRCDIR}/dist/${NAME}.tar.gz
         ${PATCH} -p0 < ${SRCDIR}/dist/des.patch
+        ${PATCH} -p0 < ${SRCDIR}/dist/makesystem.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/pgplot.patch
-        ${PATCH} -p0 < ${SRCDIR}/dist/spheroid.patch
         # Prevent overly long lines
         for file in $(find ${NAME} -name '*.f'); do
             # Remove CVS Header comments
@@ -61,12 +60,6 @@ unset MAKEFLAGS
             perl -pi -e 's{^([^'\''"]*?)!.*$}{$1}' $file
             # Break long lines
             perl -pi -e 's{^([ 0-9].{71})(.+)}{$1\n     \$$2}' $file
-        done
-        # Do not build the debug version of the Lorene libraries
-        for file in $(find ${NAME} -name Makefile); do
-            perl -pi -e 's{\t\$\(MAKE\) -f Makefile_lib_g}{#\t\$(MAKE) -f Makefile_lib_g}' $file
-            perl -pi -e 's{\tmv \*.o Objects_g}{#\tmv *.o Objects_g}' $file
-            perl -pi -e 's{install: \$\(LIB\) \$\(LIB\)/liblorenef77_g.a \$\(LIB\)/liblorenef77.a}{install: \$(LIB) \$(LIB)/liblorenef77.a}' $file
         done
         popd
         
@@ -91,6 +84,7 @@ LIB_CXX = ${LIBS}
 LIB_LAPACK = ${LAPACK_LIBS} ${BLAS_LIBS}
 LIB_PGPLOT =
 LIB_GSL = ${GSL_LIBS}
+DONTBUILDDEBUGLIB = yes
 EOF
         
         echo "LORENE: Building..."
