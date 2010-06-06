@@ -8,14 +8,21 @@
 set -x                          # Output commands
 set -e                          # Abort on errors
 
-# Set locations
-NAME=Lorene
-SRCDIR=$(dirname $0)
-INSTALL_DIR=${SCRATCH_BUILD}
-LORENE_DIR=${INSTALL_DIR}/build-${NAME}/${NAME}
 
-# Clean up environment
-unset LIBS
+
+################################################################################
+# Search
+################################################################################
+
+if [ -z "${LORENE_DIR}" ]; then
+    echo "BEGIN MESSAGE"
+    echo "LORENE selected, but LORENE_DIR not set."
+    echo "END MESSAGE"
+else
+    echo "BEGIN MESSAGE"
+    echo "Using LORENE in ${LORENE_DIR}"
+    echo "END MESSAGE"
+fi
 
 
 
@@ -23,6 +30,21 @@ unset LIBS
 # Build
 ################################################################################
 
+if [ -z "${LORENE_DIR}" ]; then
+    echo "BEGIN MESSAGE"
+    echo "Building LORENE..."
+    echo "END MESSAGE"
+    
+    # Set locations
+    NAME=Lorene
+    SRCDIR=$(dirname $0)
+    INSTALL_DIR=${SCRATCH_BUILD}
+    LORENE_DIR=${INSTALL_DIR}/build-${NAME}/${NAME}
+    
+    # Clean up environment
+    unset LIBS
+    unset MAKEFLAGS
+    
 (
     exec >&2                    # Redirect stdout to stderr
     set -x                      # Output commands
@@ -101,12 +123,14 @@ EOF
         echo "LORENE: Done."
     fi
 )
-
-if (( $? )); then
-    echo 'BEGIN ERROR'
-    echo 'Error while building LORENE.  Aborting.'
-    echo 'END ERROR'
-    exit 1
+    
+    if (( $? )); then
+        echo 'BEGIN ERROR'
+        echo 'Error while building LORENE.  Aborting.'
+        echo 'END ERROR'
+        exit 1
+    fi
+    
 fi
 
 
