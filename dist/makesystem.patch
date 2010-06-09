@@ -1,7 +1,7 @@
 diff -ru Lorene.orig/C++/Makefile Lorene/C++/Makefile
 --- Lorene.orig/C++/Makefile	2010-05-04 02:45:10.000000000 -0500
 +++ Lorene/C++/Makefile	2010-05-31 22:52:26.000000000 -0500
-@@ -2,140 +2,88 @@
+@@ -2,140 +2,93 @@
  
  include $(HOME_LORENE)/local_settings		
  
@@ -127,16 +127,21 @@ diff -ru Lorene.orig/C++/Makefile Lorene/C++/Makefile
 +Source/Valencia\
 +Source/Valeur
 +
++# Don't include _rien.o into the archive because it is not a valid object file
 +SUBLIBS = $(patsubst %,%/Objects/*.o,$(SUBDIRS))
 +SUBGLIBS = $(patsubst %,%/Objects_g/*.o,$(SUBDIRS))
++SUBLIBS_IGNORE = $(patsubst %,%/Objects/_rien.o,$(SUBDIRS))
++SUBGLIBS_IGNORE = $(patsubst %,%/Objects_g/_rien.o,$(SUBDIRS))
 +
 +.PHONY: subdirs $(SUBDIRS)
 +
 +subdirs: $(LIB) $(SUBDIRS)
++	rm -f $(SUBLIBS_IGNORE)
 +	ar -rv $(LIB)/liblorene.a $(SUBLIBS)
 +	$(RANLIB) $(LIB)/liblorene.a
-+	ar -rv $(LIB)/liblorene_g.a $(SUBGLIBS)
-+	$(RANLIB) $(LIB)/liblorene_g.a
++#	rm -f $(SUBGLIBS_IGNORE)
++#	ar -rv $(LIB)/liblorene_g.a $(SUBGLIBS)
++#	$(RANLIB) $(LIB)/liblorene_g.a
 +
 +install: subdirs
  	touch $(LIB)/date_mark
@@ -2980,11 +2985,12 @@ diff -ru Lorene.orig/F77/Makefile Lorene/F77/Makefile
 -	cd Source/Poisson2d; $(MAKE) $@
 -	ar -rv $@ $(?:.f=.o)
 -	$(RANLIB) $@
-+	cd Source; $(MAKE) $(LIB)/liblorenef77_g.a
-+	cd Source/Poisson2d; $(MAKE) $(LIB)/liblorenef77_g.a
-+	ar -rv $(LIB)/liblorenef77_g.a $(?:.f=.o)
-+	$(RANLIB) $(LIB)/liblorenef77_g.a
- 	rm -f $(?:.f=.o)
+-	rm -f $(?:.f=.o)
++#	cd Source; $(MAKE) $(LIB)/liblorenef77_g.a
++#	cd Source/Poisson2d; $(MAKE) $(LIB)/liblorenef77_g.a
++#	ar -rv $(LIB)/liblorenef77_g.a $(?:.f=.o)
++#	$(RANLIB) $(LIB)/liblorenef77_g.a
++#	rm -f $(?:.f=.o)
  
  uninstall:
  	rm -f $(LIB)/liblorenef77.a

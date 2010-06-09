@@ -115,7 +115,6 @@ EOF
         # "regular" version and a "debug" version.  Both are identical
         # (since we specified identical build options above), and we
         # ignore the "debug" version.
-        # Note also that Lorene's Makefiles do not support parallel makes.
         ${MAKE} cpp fortran export
         popd
         
