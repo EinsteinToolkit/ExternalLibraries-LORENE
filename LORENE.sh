@@ -43,7 +43,6 @@ if [ -z "${LORENE_DIR}" ]; then
     
     # Clean up environment
     unset LIBS
-    unset MAKEFLAGS
     
 (
     exec >&2                    # Redirect stdout to stderr
