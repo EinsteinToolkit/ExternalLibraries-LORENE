@@ -2961,6 +2961,30 @@ diff -ur Lorene.orig/Export/C++/Makefile Lorene/Export/C++/Makefile
 -$(BIN_TOOLS)/pointCpointo:
 -	$(CXX) $(CXXFLAGS) -o $@ $(HOME_LORENE)/Inst_tools/pointCpointo.C
 -
+diff -ur Lorene.orig/Export/C++/Source/Makefile Lorene/Export/C++/Source/Makefile
+--- Lorene.orig/Export/C++/Source/Makefile	2009-11-19 10:15:21.000000000 -0600
++++ Lorene/Export/C++/Source/Makefile	2010-06-09 08:38:17.000000000 -0500
+@@ -9,10 +9,12 @@
+ install: $(SRC) Objects Objects_g
+ 	mkdir -p $(DEPDIR)
+ 	echo *C | $(BIN_TOOLS)/pointCpointo > List_obj     # list of *.o files
++ifndef DONTBUILDDEBUGLIB
+ 	mv Objects_g/*.o .
+ 	mv _rien.o Objects_g
+ 	$(MAKE) -f Makefile_lib_g
+ 	mv *.o Objects_g
++endif
+ 	mv Objects/*.o .
+ 	mv _rien.o Objects
+ 	$(MAKE) -f Makefile_lib
+@@ -30,5 +32,7 @@
+ 	touch Objects/_rien.o
+ 
+ Objects_g:
++ifndef DONTBUILDDEBUGLIB
+ 	mkdir Objects_g
+ 	touch Objects_g/_rien.o
++endif
 diff -ur Lorene.orig/F77/Makefile Lorene/F77/Makefile
 --- Lorene.orig/F77/Makefile	2001-11-20 09:19:30.000000000 -0600
 +++ Lorene/F77/Makefile	2010-06-09 08:22:50.000000000 -0500
