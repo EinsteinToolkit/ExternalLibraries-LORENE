@@ -60,7 +60,7 @@ if [ -z "${LORENE_DIR}" ]; then
         MAKE=$(gmake --help > /dev/null 2>&1 && echo gmake || echo make)
         # Should we use gpatch or patch?
         if [ -z "$PATCH" ]; then
-          PATCH=$(gpatch -v > /dev/null 2>&1 && echo gpatch || echo patch)
+            PATCH=$(gpatch -v > /dev/null 2>&1 && echo gpatch || echo patch)
         fi
         # Should we use gtar or tar?
         TAR=$(gtar --help > /dev/null 2>&1 && echo gtar || echo tar)
@@ -156,8 +156,8 @@ fi
 
 # Set options
 LORENE_INC_DIRS="${LORENE_DIR}/Export/C++/Include ${LORENE_DIR}/C++/Include"
-LORENE_LIB_DIRS="${LORENE_DIR}/Lib"
-LORENE_LIBS='lorene_export lorene lorenef77'
+LORENE_LIB_DIRS="${LORENE_DIR}/Lib ${LORENE_EXTRA_LIB_DIRS}"
+LORENE_LIBS="lorene_export lorene lorenef77 ${LORENE_EXTRA_LIBS}"
 
 # Pass options to Cactus
 echo "BEGIN MAKE_DEFINITION"
