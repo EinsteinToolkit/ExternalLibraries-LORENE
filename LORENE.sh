@@ -59,7 +59,9 @@ if [ -z "${LORENE_DIR}" ]; then
         # Should we use gmake or make?
         MAKE=$(gmake --help > /dev/null 2>&1 && echo gmake || echo make)
         # Should we use gpatch or patch?
-        PATCH=$(gpatch -v > /dev/null 2>&1 && echo gpatch || echo patch)
+        if [ -z "$PATCH" ]; then
+          PATCH=$(gpatch -v > /dev/null 2>&1 && echo gpatch || echo patch)
+        fi
         # Should we use gtar or tar?
         TAR=$(gtar --help > /dev/null 2>&1 && echo gtar || echo tar)
         
@@ -71,6 +73,19 @@ if [ -z "${LORENE_DIR}" ]; then
         ${PATCH} -p0 < ${SRCDIR}/dist/des.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/makesystem.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/pgplot.patch
+        # Some (ancient but still used) versions of patch don't support the
+        # patch format used here but also don't report an error using the
+        # exit code. So we use this patch to test for this
+        ${PATCH} -p0 < ${SRCDIR}/dist/patchtest.patch
+        if [ ! -e Lorene/.patch_tmp ]; then
+          echo 'BEGIN ERROR'
+          echo 'The version of patch is too old to understand this patch format.'
+          echo 'Please set the PATCH environment variable to a more recent '
+          echo 'version of the patch command.'
+          echo 'END ERROR'
+          exit 1
+        fi
+        rm -f Lorene/.patch_tmp
         # Prevent overly long lines
         for file in $(find ${NAME} -name '*.f'); do
             # Remove CVS Header comments
@@ -93,7 +108,7 @@ CXXFLAGS_G = ${CXXFLAGS}
 F77 = ${F77}
 F77FLAGS = ${F77FLAGS} $($(echo ${F77} | grep -i xlf > /dev/null 2>&1) && echo '' -qfixed)
 F77FLAGS_G = ${F77FLAGS} $($(echo ${F77} | grep -i xlf > /dev/null 2>&1) && echo '' -qfixed)
-INC = -I\$(HOME_LORENE)/C++/Include -I\$(HOME_LORENE)/C++/Include_extra $(echo ${GSL_INC_DIRS} | xargs -n 1 -i@ echo -I@)
+INC = -I\$(HOME_LORENE)/C++/Include -I\$(HOME_LORENE)/C++/Include_extra $(echo ${GSL_INC_DIRS} | xargs -n 1 -I @ echo -I@)
 $($(echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1) && echo "export OBJECT_MODE=64")
 RANLIB = ${RANLIB}
 # We don't need dependencies since we always build from scratch
@@ -107,6 +122,8 @@ LIB_PGPLOT =
 LIB_GSL = ${GSL_LIBS}
 DONTBUILDDEBUGLIB = yes
 EOF
+        if [ -n "$XARGS" ]; then echo "XARGS = $XARGS" >> local_settings; fi
+        if [ -n "$FIND"  ]; then echo "FIND = $FIND"   >> local_settings; fi
         
         echo "LORENE: Building..."
         export HOME_LORENE=${LORENE_DIR}
