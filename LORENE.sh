@@ -41,8 +41,11 @@ if [ -z "${LORENE_DIR}" ]; then
     INSTALL_DIR=${SCRATCH_BUILD}
     LORENE_DIR=${INSTALL_DIR}/build-${NAME}/${NAME}
     
-    # Clean up environment
+    # Set up environment
     unset LIBS
+    if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
+        export OBJECT_MODE=64
+    fi
     
 (
     exec >&2                    # Redirect stdout to stderr
@@ -101,15 +104,17 @@ if [ -z "${LORENE_DIR}" ]; then
         
         echo "LORENE: Configuring..."
         pushd build-${NAME}/${NAME}
+        if echo ${F77} | grep -i xlf > /dev/null 2>&1; then
+            FIXEDF77FLAGS=-qfixed
+        fi
         cat > local_settings <<EOF
 CXX = ${CXX}
 CXXFLAGS = ${CXXFLAGS}
 CXXFLAGS_G = ${CXXFLAGS}
 F77 = ${F77}
-F77FLAGS = ${F77FLAGS} $($(echo ${F77} | grep -i xlf > /dev/null 2>&1) && echo '' -qfixed)
-F77FLAGS_G = ${F77FLAGS} $($(echo ${F77} | grep -i xlf > /dev/null 2>&1) && echo '' -qfixed)
-INC = -I\$(HOME_LORENE)/C++/Include -I\$(HOME_LORENE)/C++/Include_extra $(echo ${GSL_INC_DIRS} | xargs -n 1 -I @ echo -I@)
-$($(echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1) && echo "export OBJECT_MODE=64")
+F77FLAGS = ${F77FLAGS} ${FIXEDF77FLAGS}
+F77FLAGS_G = ${F77FLAGS} ${FIXEDF77FLAGS}
+INC = -I\$(HOME_LORENE)/C++/Include -I\$(HOME_LORENE)/C++/Include_extra \$(addprefix -I,${GSL_INC_DIRS})
 RANLIB = ${RANLIB}
 # We don't need dependencies since we always build from scratch
 #MAKEDEPEND = ${CXX_DEPEND} \$(INC) \$< ${CXX_DEPEND_OUT} && mv \$@ \$(df).d
