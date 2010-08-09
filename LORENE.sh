@@ -76,6 +76,7 @@ if [ -z "${LORENE_DIR}" ]; then
         ${PATCH} -p0 < ${SRCDIR}/dist/des.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/makesystem.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/pgplot.patch
+        ${PATCH} -p0 < ${SRCDIR}/dist/openmp.patch
         # Some (ancient but still used) versions of patch don't support the
         # patch format used here but also don't report an error using the
         # exit code. So we use this patch to test for this
@@ -109,7 +110,7 @@ if [ -z "${LORENE_DIR}" ]; then
         fi
         cat > local_settings <<EOF
 CXX = ${CXX}
-CXXFLAGS = ${CXXFLAGS}
+CXXFLAGS = ${CXXFLAGS} ${CPP_OPENMP_FLAGS}
 CXXFLAGS_G = ${CXXFLAGS}
 F77 = ${F77}
 F77FLAGS = ${F77FLAGS} ${FIXEDF77FLAGS}
