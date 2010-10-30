@@ -30,30 +30,27 @@ fi
 # Build
 ################################################################################
 
-if [ -z "${LORENE_DIR}" ]; then
+if [ -z "${LORENE_DIR}"  -o "${LORENE_DIR}" = 'BUILD' ]; then
     echo "BEGIN MESSAGE"
     echo "Building LORENE..."
     echo "END MESSAGE"
     
     # Set locations
+    THORN=LORENE
     NAME=Lorene
     SRCDIR=$(dirname $0)
-    INSTALL_DIR=${SCRATCH_BUILD}
-    LORENE_DIR=${INSTALL_DIR}/build-${NAME}/${NAME}
-    
-    # Set up environment
-    unset LIBS
-    if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
-        export OBJECT_MODE=64
-    fi
+    BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
+    INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
+    DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
+    LORENE_DIR=${INSTALL_DIR}
     
 (
     exec >&2                    # Redirect stdout to stderr
     set -x                      # Output commands
     set -e                      # Abort on errors
-    cd ${INSTALL_DIR}
-    if [ -e done-${NAME} -a done-${NAME} -nt ${SRCDIR}/dist/${NAME}.tar.gz \
-                         -a done-${NAME} -nt ${SRCDIR}/LORENE.sh ]
+    cd ${SCRATCH_BUILD}
+    if [ -e ${DONE_FILE} -a ${DONE_FILE} -nt ${SRCDIR}/dist/${NAME}.tar.gz \
+                         -a ${DONE_FILE} -nt ${SRCDIR}/LORENE.sh ]
     then
         echo "LORENE: The enclosed LORENE library has already been built; doing nothing"
     else
@@ -61,17 +58,26 @@ if [ -z "${LORENE_DIR}" ]; then
         
         # Should we use gmake or make?
         MAKE=$(gmake --help > /dev/null 2>&1 && echo gmake || echo make)
+        # Should we use gtar or tar?
+        TAR=$(gtar --help > /dev/null 2> /dev/null && echo gtar || echo tar)
         # Should we use gpatch or patch?
         if [ -z "$PATCH" ]; then
             PATCH=$(gpatch -v > /dev/null 2>&1 && echo gpatch || echo patch)
         fi
-        # Should we use gtar or tar?
-        TAR=$(gtar --help > /dev/null 2>&1 && echo gtar || echo tar)
+        
+        # Set up environment
+        unset LIBS
+        if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
+            export OBJECT_MODE=64
+        fi
+        
+        echo "HDF5: Preparing directory structure..."
+        mkdir build external done 2> /dev/null || true
+        rm -rf ${BUILD_DIR} ${INSTALL_DIR}
+        mkdir ${BUILD_DIR} ${INSTALL_DIR}
         
         echo "LORENE: Unpacking archive..."
-        rm -rf build-${NAME}
-        mkdir build-${NAME}
-        pushd build-${NAME}
+        pushd ${BUILD_DIR}
         ${TAR} xzf ${SRCDIR}/dist/${NAME}.tar.gz
         ${PATCH} -p0 < ${SRCDIR}/dist/des.patch
         ${PATCH} -p0 < ${SRCDIR}/dist/makesystem.patch
@@ -101,13 +107,13 @@ if [ -z "${LORENE_DIR}" ]; then
             # Break long lines
             perl -pi -e 's{^([ 0-9].{71})(.+)}{$1\n     \$$2}' $file
         done
-        popd
         
         echo "LORENE: Configuring..."
-        pushd build-${NAME}/${NAME}
+        cd ${NAME}
         if echo ${F77} | grep -i xlf > /dev/null 2>&1; then
             FIXEDF77FLAGS=-qfixed
         fi
+        export HOME_LORENE=${BUILD_DIR}/${NAME}
         cat > local_settings <<EOF
 CXX = ${CXX}
 CXXFLAGS = ${CXXFLAGS} ${CPP_OPENMP_FLAGS}
@@ -132,22 +138,32 @@ EOF
         if [ -n "$FIND"  ]; then echo "FIND = $FIND"   >> local_settings; fi
         
         echo "LORENE: Building..."
-        export HOME_LORENE=${LORENE_DIR}
         # Note that this builds two versions of the library, a
         # "regular" version and a "debug" version.  Both are identical
         # (since we specified identical build options above), and we
         # ignore the "debug" version.
         ${MAKE} cpp fortran export
+
+        echo "LORENE: Installing..."
+        mv ${BUILD_DIR}/${NAME}/Lib                ${INSTALL_DIR}
+        mkdir ${INSTALL_DIR}/C++
+        mv ${BUILD_DIR}/${NAME}/C++/Include        ${INSTALL_DIR}/C++/
+        mkdir ${INSTALL_DIR}/Export
+        mkdir ${INSTALL_DIR}/Export/C++
+        mv ${BUILD_DIR}/${NAME}/Export/C++/Include ${INSTALL_DIR}/Export/C++/
         popd
-        
-        echo 'done' > done-${NAME}
+
+        echo "LORENE: Cleaning up..."
+        rm -rf ${BUILD_DIR}
+
+        date > ${DONE_FILE}
         echo "LORENE: Done."
     fi
 )
     
     if (( $? )); then
         echo 'BEGIN ERROR'
-        echo 'Error while building LORENE.  Aborting.'
+        echo 'Error while building LORENE. Aborting.'
         echo 'END ERROR'
         exit 1
     fi
@@ -172,7 +188,7 @@ echo "LORENE_DIR      = ${LORENE_DIR}"
 echo "LORENE_INC_DIRS = ${LORENE_INC_DIRS}"
 echo "LORENE_LIB_DIRS = ${LORENE_LIB_DIRS}"
 echo "LORENE_LIBS     = ${LORENE_LIBS}"
-echo 'HOME_LORENE     = $(LORENE_DIR)'
+echo "HOME_LORENE     = ${LORENE_DIR}"
 echo "END MAKE_DEFINITION"
 
 echo 'INCLUDE_DIRECTORY $(LORENE_INC_DIRS)'
