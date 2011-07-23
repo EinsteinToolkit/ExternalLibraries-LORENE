@@ -40,7 +40,17 @@ if [ -z "${LORENE_DIR}"  -o "${LORENE_DIR}" = 'BUILD' ]; then
     NAME=Lorene
     SRCDIR=$(dirname $0)
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
-    INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
+    if [ -z "${LORENE_INSTALL_DIR}" ]; then
+        echo "BEGIN MESSAGE"
+        echo "LORENE install directory, LORENE_INSTALL_DIR, not set. Installing in the default configuration location. "
+        echo "END MESSAGE"
+     INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
+    else
+        echo "BEGIN MESSAGE"
+        echo "LORENE install directory, LORENE_INSTALL_DIR, selected. Installing LORENE at ${LORENE_INSTALL_DIR} "
+        echo "END MESSAGE"
+     INSTALL_DIR=${LORENE_INSTALL_DIR}
+    fi
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     LORENE_DIR=${INSTALL_DIR}
     
