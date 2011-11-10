@@ -30,7 +30,9 @@ fi
 # Build
 ################################################################################
 
-if [ -z "${LORENE_DIR}"  -o "${LORENE_DIR}" = 'BUILD' ]; then
+if [ -z "${LORENE_DIR}"                                                 \
+     -o "$(echo "${LORENE_DIR}" | tr '[a-z]' '[A-Z]')" = 'BUILD' ]
+then
     echo "BEGIN MESSAGE"
     echo "Building LORENE..."
     echo "END MESSAGE"
@@ -42,14 +44,14 @@ if [ -z "${LORENE_DIR}"  -o "${LORENE_DIR}" = 'BUILD' ]; then
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${LORENE_INSTALL_DIR}" ]; then
         echo "BEGIN MESSAGE"
-        echo "LORENE install directory, LORENE_INSTALL_DIR, not set. Installing in the default configuration location. "
+        echo "LORENE install directory, LORENE_INSTALL_DIR, not set. Installing in the default configuration location."
         echo "END MESSAGE"
-     INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
+        INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
     else
         echo "BEGIN MESSAGE"
-        echo "LORENE install directory, LORENE_INSTALL_DIR, selected. Installing LORENE at ${LORENE_INSTALL_DIR} "
+        echo "LORENE install directory, LORENE_INSTALL_DIR, selected. Installing LORENE at ${LORENE_INSTALL_DIR}"
         echo "END MESSAGE"
-     INSTALL_DIR=${LORENE_INSTALL_DIR}
+        INSTALL_DIR=${LORENE_INSTALL_DIR}
     fi
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     LORENE_DIR=${INSTALL_DIR}
@@ -157,10 +159,10 @@ EOF
         echo "LORENE: Installing..."
         mv ${BUILD_DIR}/${NAME}/Lib                ${INSTALL_DIR}
         mkdir ${INSTALL_DIR}/C++
-        mv ${BUILD_DIR}/${NAME}/C++/Include        ${INSTALL_DIR}/C++/
+        mv ${BUILD_DIR}/${NAME}/C++/Include        ${INSTALL_DIR}/C++
         mkdir ${INSTALL_DIR}/Export
         mkdir ${INSTALL_DIR}/Export/C++
-        mv ${BUILD_DIR}/${NAME}/Export/C++/Include ${INSTALL_DIR}/Export/C++/
+        mv ${BUILD_DIR}/${NAME}/Export/C++/Include ${INSTALL_DIR}/Export/C++
         popd
 
         echo "LORENE: Cleaning up..."
