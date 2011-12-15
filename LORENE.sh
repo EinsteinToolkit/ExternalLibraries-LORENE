@@ -5,7 +5,9 @@
 ################################################################################
 
 # Set up shell
-set -x                          # Output commands
+if [ "$(echo ${VERBOSE} | tr '[:upper:]' '[:lower:]')" = 'yes' ]; then
+    set -x                      # Output commands
+fi
 set -e                          # Abort on errors
 
 
@@ -34,7 +36,7 @@ if [ -z "${LORENE_DIR}"                                                 \
      -o "$(echo "${LORENE_DIR}" | tr '[a-z]' '[A-Z]')" = 'BUILD' ]
 then
     echo "BEGIN MESSAGE"
-    echo "Building LORENE..."
+    echo "Using bundled LORENE..."
     echo "END MESSAGE"
     
     # Set locations
@@ -43,39 +45,35 @@ then
     SRCDIR=$(dirname $0)
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${LORENE_INSTALL_DIR}" ]; then
-        echo "BEGIN MESSAGE"
-        echo "LORENE install directory LORENE_INSTALL_DIR not set. Installing in the default configuration location."
-        echo "END MESSAGE"
         INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
     else
         echo "BEGIN MESSAGE"
-        echo "LORENE install directory LORENE_INSTALL_DIR set. Installing LORENE at ${LORENE_INSTALL_DIR}."
+        echo "Installing LORENE into ${LORENE_INSTALL_DIR}"
         echo "END MESSAGE"
         INSTALL_DIR=${LORENE_INSTALL_DIR}
     fi
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     LORENE_DIR=${INSTALL_DIR}
     
-(
-    exec >&2                    # Redirect stdout to stderr
-    set -x                      # Output commands
-    set -e                      # Abort on errors
-    cd ${SCRATCH_BUILD}
     if [ -e ${DONE_FILE} -a ${DONE_FILE} -nt ${SRCDIR}/dist/${NAME}.tar.gz \
                          -a ${DONE_FILE} -nt ${SRCDIR}/LORENE.sh ]
     then
-        echo "LORENE: The enclosed LORENE library has already been built; doing nothing"
+        echo "BEGIN MESSAGE"
+        echo "LORENE has already been built; doing nothing"
+        echo "END MESSAGE"
     else
-        echo "LORENE: Building enclosed LORENE library"
+        echo "BEGIN MESSAGE"
+        echo "Building LORENE"
+        echo "END MESSAGE"
         
-        # Should we use gmake or make?
-        MAKE=$(gmake --help > /dev/null 2>&1 && echo gmake || echo make)
-        # Should we use gtar or tar?
-        TAR=$(gtar --help > /dev/null 2> /dev/null && echo gtar || echo tar)
-        # Should we use gpatch or patch?
-        if [ -z "$PATCH" ]; then
-            PATCH=$(gpatch -v > /dev/null 2>&1 && echo gpatch || echo patch)
+        # Build in a subshell
+        (
+        exec >&2                # Redirect stdout to stderr
+        if [ "$(echo ${VERBOSE} | tr '[:upper:]' '[:lower:]')" = 'yes' ]; then
+            set -x              # Output commands
         fi
+        set -e                  # Abort on errors
+        cd ${SCRATCH_BUILD}
         
         # Set up environment
         unset LIBS
@@ -128,8 +126,8 @@ then
         export HOME_LORENE=${BUILD_DIR}/${NAME}
         cat > local_settings <<EOF
 CXX = ${CXX}
-CXXFLAGS = ${CXXFLAGS} ${CPP_OPENMP_FLAGS}
-CXXFLAGS_G = ${CXXFLAGS}
+CXXFLAGS = ${CXXFLAGS} ${CPPFLAGS} ${CPP_OPENMP_FLAGS}
+CXXFLAGS_G = ${CXXFLAGS} ${CPPFLAGS}
 F77 = ${F77}
 F77FLAGS = ${F77FLAGS} ${FIXEDF77FLAGS}
 F77FLAGS_G = ${F77FLAGS} ${FIXEDF77FLAGS}
@@ -170,14 +168,15 @@ EOF
 
         date > ${DONE_FILE}
         echo "LORENE: Done."
-    fi
-)
-    
-    if (( $? )); then
-        echo 'BEGIN ERROR'
-        echo 'Error while building LORENE. Aborting.'
-        echo 'END ERROR'
-        exit 1
+        
+        )
+        
+        if (( $? )); then
+            echo 'BEGIN ERROR'
+            echo 'Error while building LORENE. Aborting.'
+            echo 'END ERROR'
+            exit 1
+        fi
     fi
     
 fi
