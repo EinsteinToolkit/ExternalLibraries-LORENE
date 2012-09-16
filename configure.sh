@@ -88,16 +88,16 @@ then
         
         echo "LORENE: Unpacking archive..."
         pushd ${BUILD_DIR}
-        ${TAR} xzf ${SRCDIR}/dist/${NAME}.tar.gz
-        ${PATCH} -p0 < ${SRCDIR}/dist/des.patch
-        ${PATCH} -p0 < ${SRCDIR}/dist/makesystem.patch
-        ${PATCH} -p0 < ${SRCDIR}/dist/pgplot.patch
-        ${PATCH} -p0 < ${SRCDIR}/dist/openmp.patch
-        ${PATCH} -p0 < ${SRCDIR}/dist/check_fopen_error.patch
+        ${TAR?} xzf ${SRCDIR}/dist/${NAME}.tar.gz
+        ${PATCH?} -p0 < ${SRCDIR}/dist/des.patch
+        ${PATCH?} -p0 < ${SRCDIR}/dist/makesystem.patch
+        ${PATCH?} -p0 < ${SRCDIR}/dist/pgplot.patch
+        ${PATCH?} -p0 < ${SRCDIR}/dist/openmp.patch
+        ${PATCH?} -p0 < ${SRCDIR}/dist/check_fopen_error.patch
         # Some (ancient but still used) versions of patch don't support the
         # patch format used here but also don't report an error using the
         # exit code. So we use this patch to test for this
-        ${PATCH} -p0 < ${SRCDIR}/dist/patchtest.patch
+        ${PATCH?} -p0 < ${SRCDIR}/dist/patchtest.patch
         if [ ! -e Lorene/.patch_tmp ]; then
           echo 'BEGIN ERROR'
           echo 'The version of patch is too old to understand this patch format.'
