@@ -186,7 +186,6 @@ EOF
         
         date > ${DONE_FILE}
         echo "LORENE: Done."
-        
         )
         
         if (( $? )); then
