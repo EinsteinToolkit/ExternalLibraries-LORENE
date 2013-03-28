@@ -16,7 +16,9 @@ set -e                          # Abort on errors
 # Search
 ################################################################################
 
-if [ -z "${LORENE_DIR}" ]; then
+if [ -z "${LORENE_DIR}" \
+     -o "$(echo "${LORENE_DIR}" | tr '[a-z]' '[A-Z]')" = 'NO_BUILD' ] 
+then
     echo "BEGIN MESSAGE"
     echo "LORENE selected, but LORENE_DIR not set."
     echo "END MESSAGE"
