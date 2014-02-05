@@ -144,7 +144,7 @@ then
         export HOME_LORENE=${BUILD_DIR}/${NAME}
         cat > local_settings <<EOF
 CXX = ${CXX}
-CXXFLAGS = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS})
+CXXFLAGS = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS}) \$(addprefix -I,${SYS_INC_DIRS})
 CXXFLAGS_G = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS})
 F77 = ${F77}
 F77FLAGS = ${F77FLAGS} ${FIXEDF77FLAGS} $(test x${OPENMP_MODE} = xyes && echo ${F77_OPENMP_FLAGS})
