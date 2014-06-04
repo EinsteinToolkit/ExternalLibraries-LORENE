@@ -144,11 +144,11 @@ then
         export HOME_LORENE=${BUILD_DIR}/${NAME}
         cat > local_settings <<EOF
 CXX = ${CXX}
-CXXFLAGS = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS})
-CXXFLAGS_G = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS})
+CXXFLAGS = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS}) ${LDFLAGS}
+CXXFLAGS_G = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS}) ${LDFLAGS}
 F77 = ${F77}
-F77FLAGS = ${F77FLAGS} ${FIXEDF77FLAGS} $(test x${OPENMP_MODE} = xyes && echo ${F77_OPENMP_FLAGS})
-F77FLAGS_G = ${F77FLAGS} ${FIXEDF77FLAGS} $(test x${OPENMP_MODE} = xyes && echo ${F77_OPENMP_FLAGS})
+F77FLAGS = ${F77FLAGS} ${FIXEDF77FLAGS} $(test x${OPENMP_MODE} = xyes && echo ${F77_OPENMP_FLAGS}) ${LDFLAGS}
+F77FLAGS_G = ${F77FLAGS} ${FIXEDF77FLAGS} $(test x${OPENMP_MODE} = xyes && echo ${F77_OPENMP_FLAGS}) ${LDFLAGS}
 INC = -I\$(HOME_LORENE)/C++/Include -I\$(HOME_LORENE)/C++/Include_extra \$(addprefix -I,${GSL_INC_DIRS})
 RANLIB = ${RANLIB}
 # We don't need dependencies since we always build from scratch
