@@ -59,7 +59,7 @@ then
     # Set locations
     THORN=LORENE
     NAME=Lorene
-    SRCDIR=$(dirname $0)
+    SRCDIR="$(dirname $0)"
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${LORENE_INSTALL_DIR}" ]; then
         INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
@@ -226,14 +226,16 @@ LORENE_INC_DIRS="${LORENE_DIR}/Export/C++/Include ${LORENE_DIR}/C++/Include"
 LORENE_LIB_DIRS="${LORENE_DIR}/Lib ${LORENE_EXTRA_LIB_DIRS}"
 LORENE_LIBS="lorene_export lorene lorenef77 ${LORENE_EXTRA_LIBS}"
 
+LORENE_INC_DIRS="$(${CCTK_HOME}/lib/sbin/strip-incdirs.sh ${LORENE_INC_DIRS})"
+LORENE_LIB_DIRS="$(${CCTK_HOME}/lib/sbin/strip-libdirs.sh ${LORENE_LIB_DIRS})"
+
 # Pass options to Cactus
 echo "BEGIN MAKE_DEFINITION"
-echo "HAVE_LORENE     = 1"
 echo "LORENE_DIR      = ${LORENE_DIR}"
 echo "LORENE_INC_DIRS = ${LORENE_INC_DIRS}"
 echo "LORENE_LIB_DIRS = ${LORENE_LIB_DIRS}"
 echo "LORENE_LIBS     = ${LORENE_LIBS}"
-echo "HOME_LORENE     = ${LORENE_DIR}"
+# echo "HOME_LORENE     = ${LORENE_DIR}"
 echo "END MAKE_DEFINITION"
 
 echo 'INCLUDE_DIRECTORY $(LORENE_INC_DIRS)'
