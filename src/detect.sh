@@ -44,7 +44,7 @@ then
     if [ "x$TAR" = x ] ; then
         echo 'BEGIN ERROR'
         echo 'Could not find tar command.'
-        echo 'Please make sure that the (GNU) tar command  is present,'
+        echo 'Please make sure that the (GNU) tar command is present,'
         echo 'and that the TAR variable is set to its location.'
         echo 'END ERROR'
         exit 1
