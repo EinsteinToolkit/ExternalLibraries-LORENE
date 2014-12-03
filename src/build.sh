@@ -35,6 +35,7 @@ if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
 fi
 
 echo "LORENE: Preparing directory structure..."
+cd ${SCRATCH_BUILD}
 mkdir build external done 2> /dev/null || true
 rm -rf ${BUILD_DIR} ${INSTALL_DIR}
 mkdir ${BUILD_DIR} ${INSTALL_DIR}
