@@ -9,4 +9,4 @@ export LORENE_INSTALL_DIR
 
 $(CCTK_TARGET) $(OBJS) $(SRCS:%=%.d): $(SCRATCH_BUILD)/done/$(THORN)
 $(SCRATCH_BUILD)/done/$(THORN): $(SRCDIR)/build.sh
-	$(SRCDIR)/build.sh
+	+$(SRCDIR)/build.sh
