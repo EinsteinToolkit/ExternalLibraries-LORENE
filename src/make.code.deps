@@ -8,5 +8,5 @@ export LORENE_EXTRA_LIB_DIRS LORENE_EXTRA_LIBS
 export LORENE_INSTALL_DIR
 
 $(CCTK_TARGET) $(OBJS) $(SRCS:%=%.d): $(SCRATCH_BUILD)/done/$(THORN)
-$(SCRATCH_BUILD)/done/$(THORN): $(SRCDIR)/build.sh
+$(SCRATCH_BUILD)/done/$(THORN): $(SRCDIR)/build.sh $(wildcard $(SRCDIR)/../dist/*.tar.gz $(SRCDIR)/../dist/*.patch)
 	+$(SRCDIR)/build.sh
