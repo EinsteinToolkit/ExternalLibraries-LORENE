@@ -26,6 +26,8 @@ else
     echo "END MESSAGE"
 fi
 
+THORN=LORENE
+
 
 
 ################################################################################
@@ -59,7 +61,6 @@ then
     fi
 
     # Set locations
-    THORN=LORENE
     NAME=Lorene
     SRCDIR="$(dirname $0)"
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
@@ -71,10 +72,10 @@ then
         echo "END MESSAGE"
         INSTALL_DIR=${LORENE_INSTALL_DIR}
     fi
-    DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
+    LORENE_BUILD=1
     LORENE_DIR=${INSTALL_DIR}
 else
-    THORN=LORENE
+    LORENE_BUILD=
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     if [ ! -e ${DONE_FILE} ]; then
         mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
@@ -90,6 +91,7 @@ fi
 
 # Pass configuration options to build script
 echo "BEGIN MAKE_DEFINITION"
+echo "LORENE_BUILD          = ${LORENE_BUILD}"
 echo "LORENE_EXTRA_LIB_DIRS = ${LORENE_EXTRA_LIB_DIRS}"
 echo "LORENE_EXTRA_LIBS     = ${LORENE_EXTRA_LIBS}"
 echo "LORENE_INSTALL_DIR    = ${LORENE_INSTALL_DIR}"
