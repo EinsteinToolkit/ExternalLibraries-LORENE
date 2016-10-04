@@ -10,7 +10,11 @@ if [ "$(echo ${VERBOSE} | tr '[:upper:]' '[:lower:]')" = 'yes' ]; then
 fi
 set -e                          # Abort on errors
 
-
+function printtime() {
+  if [ "$(echo ${VERBOSE} | tr '[:upper:]' '[:lower:]')" = 'yes' ]; then
+    perl -e 'eval { require("Time/HiRes.pm"); print(&Time::HiRes::gettimeofday()+0," "); }; if($@) { print time(); }'
+  fi
+}
 
 # Set locations
 THORN=LORENE
@@ -116,6 +120,7 @@ EOF
 if [ -n "$XARGS" ]; then echo "XARGS = $XARGS" >> local_settings; fi
 if [ -n "$FIND"  ]; then echo "FIND = $FIND"   >> local_settings; fi
 
+printtime
 echo "LORENE: Building..."
 # Note that this builds two versions of the library, a "regular"
 # version and a "debug" version. Both are identical (since we
@@ -123,6 +128,7 @@ echo "LORENE: Building..."
 # version.
 ${MAKE} cpp fortran export
 
+printtime
 echo "LORENE: Installing..."
 mv ${BUILD_DIR}/${NAME}/Lib                ${INSTALL_DIR}
 mkdir ${INSTALL_DIR}/C++
