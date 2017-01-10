@@ -1,0 +1,27 @@
+diff -ur Lorene.orig/C++/Source/Eos/eos_multi_poly.C Lorene/C++/Source/Eos/eos_multi_poly.C
+--- Lorene.orig/C++/Source/Eos/eos_multi_poly.C	2012-10-09 11:15:26.000000000 -0500
++++ Lorene/C++/Source/Eos/eos_multi_poly.C	2016-08-25 11:10:47.723049955 -0500
+@@ -270,14 +270,14 @@
+     if (npeos > 2) {
+ 
+         kappa_cgs[2] = kappa_cgs[1]
+-	  * pow(10., logRho[0]*(gamma[1]-gamma[2])) ;
++	  * pow(10., logRho[1]*(gamma[1]-gamma[2])) ;
+ 
+ 	if (npeos > 3) {
+ 
+ 	    for (int l=3; l<npeos; l++) {
+ 
+ 	        kappa_cgs[l] = kappa_cgs[l-1]
+-		  * pow(10., logRho[l-2]*(gamma[l-1]-gamma[l])) ;
++		  * pow(10., logRho[l-1]*(gamma[l-1]-gamma[l])) ;
+ 
+ 	    }
+ 
+@@ -1161,4 +1161,4 @@
+ 
+     return resu ;
+ 
+-}
++}
+\ No newline at end of file
