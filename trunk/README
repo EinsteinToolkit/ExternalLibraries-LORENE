@@ -1,0 +1,20 @@
+Cactus Code Thorn LORENE
+Author(s)    : Erik Schnetter
+Maintainer(s): Cactus team
+Licence      : GPL
+--------------------------------------------------------------------------
+
+1. Purpose
+
+Distribute the LORENE library; see <http://www.lorene.obspm.fr/>.
+
+
+
+From the web site:
+
+LORENE: Langage Objet pour la RElativité NumériquE
+
+LORENE is a set of C++ classes to solve various problems arising in
+numerical relativity, and more generally in computational
+astrophysics.  It provides tools to solve partial differential
+equations by means of multi-domain spectral methods.

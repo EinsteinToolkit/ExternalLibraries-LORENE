@@ -1,0 +1,11 @@
+diff -ur Lorene.orig/Export/C++/Source/bin_ns_aux.C Lorene/Export/C++/Source/bin_ns_aux.C
+--- Lorene.orig/Export/C++/Source/bin_ns_aux.C	2006-09-12 03:04:07.000000000 -0500
++++ Lorene/Export/C++/Source/bin_ns_aux.C	2010-07-29 12:44:16.000000000 -0500
+@@ -322,6 +322,7 @@
+     vueulerz1.coef() ;
+     vueulerz2.coef() ;
+ 
++#pragma omp parallel for
+     for (int i=0; i<np; i++) {
+ 
+ 	double x0 = xx[i] * km ;    // x in Lorene's unit

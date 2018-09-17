@@ -1,0 +1,79 @@
+This tarball LORENE.tar.gz is created in the following way:
+
+1. Check out LORENE from CVS:
+
+   cvs -d :pserver:anonymous@octane.obspm.fr:/cvsroot checkout Lorene
+
+2. Do not begin to build LORENE in this directory, as this would
+   modify the source tree.  (It would add additional files.)
+
+3. Create the tarball from this source tree:
+
+   tar czf Lorene.tar.gz Lorene
+
+4. Test whether the patches apply cleanly.  Do not add the patches to
+   the tarball:
+
+   patch -p0 < [XXX].patch
+
+5. Remove the cvs source tree again:
+
+   rm -rf Lorene
+
+
+Note: In case the patches do not apply cleanly do the following:
+
+1. backup the original patches so that you have them close by as a reference.
+
+2. des.patch is supposed to comment out any call to the graphics 
+device. Search for des_meridian, des_coupe* to identify the pieces
+of code to comment out. Comment them out and create the patch with:
+
+  cvs diff -u > ../des.patch
+
+Fix Lorene paths in the des.patch so you can apply the patch 
+from the parent directory. For example replace C++/Source/... 
+for Lorene/C++/Source/...  (Any cvs command that would do this for
+you on one go?)
+
+2. Erase the previously edited Lorene directory. Have now two original
+copies of Lorene: Lorene and Lorene.orig. Apply the makesystem.patch patch
+to Lorene. Fix what went wrong and create the new patch:
+
+  diff --new-file -ru Lorene.orig Lorene > makesystem.patch
+
+Remove Lorene and Lorene.orig directories. Untar Lorene.tar.gz again
+and apply the newly created patch:
+
+ patch -p0 < makesystem.patch
+
+If applied cleanly then create a copy of Lorene with this patch:
+
+ cp -r Lorene Lorene.orig
+
+3. Apply pgplot.patch. If you need to fix it follow the procedure in 
+step 2. above. Copy the patched Lorene to Lorene.orig.
+
+4. Apply openmp.patch and if everything went cleanly copy it to Lorene.orig.
+Otherwise follow step 2 to fix the issues.
+
+5. Apply check_fopen_error.patch. If succeded then copy Lorene to Lorene.orig
+if failed, fix it as in 2.
+ 
+6. Once satisfied with all fixes in these patches test them if they apply 
+cleanly to Lorene:
+
+  tar -xzf Lorene.tar.gz
+  patch -p0 < des.patch
+  patch -p0 < makesystem.patch
+  patch -p0 < pgplot.patch
+  patch -p0 < openmp.patch
+  patch -p0 < check_fopen_error.patch
+  patch -p0 < patchtest.patch
+
+If applied cleanly get rid of the original ones, propose the patch to the 
+ET Trac system for reviewing and erase lorene source tree:
+
+  rm -rf Lorene
+
+
