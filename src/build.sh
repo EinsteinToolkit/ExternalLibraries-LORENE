@@ -81,30 +81,17 @@ done
 echo "LORENE: Configuring..."
 cd ${NAME}
 
-# determine OPENMP_MODE from the OPENMP option
-OPENMP_MODE='no'
-if test -n "${OPENMP}"; then
-    OPENMP=`echo ${OPENMP} | tr '[:upper:]' '[:lower:]'`
-    if test "${OPENMP}" != 'yes' -a "${OPENMP}" != 'no'; then
-        echo 'BEGIN ERROR'
-        echo "Didn't recognize setting of OPENMP=\"$OPENMP\" (should be either \"yes\" or \"no\")"
-        echo 'END ERROR'
-        exit 1
-    fi
-    OPENMP_MODE="${OPENMP}"
-fi
-
 if echo ${F77} | grep -i xlf > /dev/null 2>&1; then
     FIXEDF77FLAGS=-qfixed
 fi
 export HOME_LORENE=${BUILD_DIR}/${NAME}
 cat > local_settings <<EOF
 CXX = ${CXX}
-CXXFLAGS = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS}) \$(addprefix -I,${SYS_INC_DIRS}) ${LDFLAGS}
-CXXFLAGS_G = ${CXXFLAGS} ${CPPFLAGS} $(test x${OPENMP_MODE} = xyes && echo ${CXX_OPENMP_FLAGS} ${CPP_OPENMP_FLAGS}) ${LDFLAGS}
+CXXFLAGS = ${CXXFLAGS} ${CPPFLAGS} \$(addprefix -I,${SYS_INC_DIRS}) ${LDFLAGS}
+CXXFLAGS_G = ${CXXFLAGS} ${CPPFLAGS} ${LDFLAGS}
 F77 = ${F77}
-F77FLAGS = ${F77FLAGS} ${FIXEDF77FLAGS} $(test x${OPENMP_MODE} = xyes && echo ${F77_OPENMP_FLAGS}) ${LDFLAGS}
-F77FLAGS_G = ${F77FLAGS} ${FIXEDF77FLAGS} $(test x${OPENMP_MODE} = xyes && echo ${F77_OPENMP_FLAGS}) ${LDFLAGS}
+F77FLAGS = ${F77FLAGS} ${FIXEDF77FLAGS} ${LDFLAGS}
+F77FLAGS_G = ${F77FLAGS} ${FIXEDF77FLAGS} ${LDFLAGS}
 INC = -I\$(HOME_LORENE)/C++/Include -I\$(HOME_LORENE)/C++/Include_extra \$(addprefix -I,${GSL_INC_DIRS})
 RANLIB = ${RANLIB}
 # We don't need dependencies since we always build from scratch
