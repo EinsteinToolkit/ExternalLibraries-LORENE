@@ -1,0 +1,20 @@
+diff -ur Lorene.orig/C++/Source/Eos/eos_tabul.C Lorene/C++/Source/Eos/eos_tabul.C
+--- Lorene.orig/C++/Source/Eos/eos_tabul.C	2014-03-06 09:53:35.000000000 -0600
++++ Lorene/C++/Source/Eos/eos_tabul.C	2020-10-11 11:18:33.513925365 -0500
+@@ -208,6 +208,16 @@
+ void Eos_tabul::read_table() {
+ 
+   using namespace Unites ;
++
++  // If user specified another path for EOS tables, respect this
++  char* user_table_path_c = getenv("LORENE_TABULATED_EOS_PATH");
++  if (user_table_path_c != NULL) {
++    std::string user_table_path(user_table_path_c);
++    // Strip path from tablename in Lorene output file
++    std::string filename = tablename.substr(tablename.find_last_of('/')+1);
++    // Combine user-given path and filename from file
++    tablename = user_table_path + '/' + filename;
++  }
+     	
+   ifstream fich(tablename.data()) ;
+ 
